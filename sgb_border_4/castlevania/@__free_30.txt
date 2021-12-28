@@ -1,0 +1,16 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+.relativeinclude on
+
+
+	.include "__border_tiles1.txt"
+	.include "__border_tiles2.txt"
+	.include "__border_tilemap.txt"
+
+	.include "__palette_colors.txt"
+
+
+.relativeinclude off

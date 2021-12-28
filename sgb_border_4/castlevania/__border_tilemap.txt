@@ -1,0 +1,54 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_border_tilemap:
+	ld de, @data					; rom src
+	ld hl, 0x8800					; vram dst
+	ld bc, 0x0800 + 0x80
+
+
+
+@@loop:
+	ld a, (de)
+	ldi (hl), a
+
+	inc de
+	dec bc
+
+	ld a, b
+	or a, c
+	jr nz, @@loop
+
+
+
+	ld a, (0xcca3)
+	jp 0x49f+1
+
+
+
+; /////////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////////
+
+
+
+.relativeinclude off
+
+
+@data:
+
+
+.if ALTERNATE_BORDER == 0
+	.import "sgb_border_4/castlevania/__border_tilemap.bin"
+	; .import "__border_tilemap.bin"
+
+
+.elseif ALTERNATE_BORDER == 1
+	.import "sgb_border_4/castlevania/__border_tilemap_alt.bin"
+
+
+.endif
+
+
+.relativeinclude on

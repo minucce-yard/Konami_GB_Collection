@@ -1,0 +1,64 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_boot:
+	ld a, (0xcca3)					; skip soft reset
+	or a
+	jr nz, @@exit
+
+
+	ld a, int(orga(sgb_boot) / 0x4000)
+	ld (0xcca3), a
+
+
+; ------------------------------------------------------------
+; ------------------------------------------------------------
+
+
+	call sgb_detect
+	jr z, @@exit
+
+
+	ld a, 0x01						; sgb flag
+	ld (0xcca5), a
+
+
+; ------------------------------------------------------
+; ------------------------------------------------------
+
+
+	call sgb_init
+	call sgb_border
+	call sgb_palette
+	call sgb_unlock
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+	call sgb_gbc_mode				; reset sgb(c) flag
+	jr nc, @@exit
+
+
+	xor a
+	ld (0xcca5), a
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+@@exit:
+	xor a							; old code
+	ldh (0x0f), a
+
+
+	ldh a, (0xff)
+	and a, 0xe2
+	ldh (0xff), a
+
+
+	ret

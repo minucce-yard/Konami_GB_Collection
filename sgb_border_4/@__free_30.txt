@@ -1,0 +1,41 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+.relativeinclude on
+
+
+	.include "__boot.txt"
+	.include "__sgb.txt"
+
+	.include "__border.txt"
+	.include "__palette.txt"
+
+
+.relativeinclude off
+
+
+
+; /////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////
+
+
+
+.if AUTOBOOT_GAME == 1
+	.include "sgb_border_4/gradius/@__free_30.txt"
+
+
+.elseif AUTOBOOT_GAME == 2
+	.include "sgb_border_4/castlevania/@__free_30.txt"
+
+
+.elseif AUTOBOOT_GAME == 3
+	.include "sgb_border_4/kungfu/@__free_30.txt"
+
+
+.elseif AUTOBOOT_GAME == 4
+	.include "sgb_border_4/antarctic/@__free_30.txt"
+
+
+.endif
