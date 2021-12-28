@@ -1,0 +1,538 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_detect:
+	ld hl, @sgb_multitap_on
+	call sgb_command_full
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+	ld c, 0x00
+
+	ld a, (c)						; joypad id
+	and a, 0x03
+	cp a, 0x03
+	jr nz, @@exit
+
+
+	ld a, 0x20						; reset
+	ld (c), a
+
+	ld (c), a
+	ld (c), a
+
+	ld a, 0x30						; pulse
+	ld (c), a
+
+
+	ld a, 0x10						; joypad
+	ld (c), a
+	ld a, (c)
+	ld a, (c)
+	ld a, (c)
+	ld a, (c)
+	ld a, (c)
+
+
+	ld a, 0x30						; pulse
+	ld (c), a
+
+	ld a, (c)
+	ld a, (c)
+	ld a, (c)
+
+
+	ld a, (c)						; read id
+	and a, 0x03
+	cp a, 0x03
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+@@exit:
+	push af							; nz = yes
+
+
+	ld hl, @sgb_multitap_off
+	call sgb_command_full
+
+
+	pop af
+	ret
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+@sgb_multitap_on:
+	.db 0x89, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+
+@sgb_multitap_off:
+	.db 0x89, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+
+
+; /////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////
+
+
+
+sgb_command_basic:
+	ld de, 0xc000					; oam memory
+
+
+	ld a, h
+	ld (de), a
+	inc e
+
+
+	ld a, l
+	ld (de), a
+	inc e
+
+
+; -----------------------------------------------------
+; -----------------------------------------------------
+
+
+	xor a
+
+
+@@loop:
+	ld (de), a						; wipe
+	inc e
+
+	bit 4, e						; xx10
+	jr z, @@loop
+
+
+	ld hl, 0xc000					; buffer
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+sgb_command_full:
+	ld a, 0x30						; reset pulse
+	ldh (0x00), a
+
+	xor a
+	ldh (0x00), a
+
+	ld a, 0x30
+	ldh (0x00), a
+
+
+
+	ld b, 0x10						; 16 bytes
+	ld c, 0x00						; ff00
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+@@byte_send:
+	ld e, 0x08						; 8 bits
+
+	ldi a, (hl)
+	ld d, a
+
+
+
+@@bit_send:
+	bit 0, d
+
+	ld a, 0x10						; low bit (0)
+	jr nz, @@data_send
+
+	add a, a						; high bit (1)
+
+
+
+@@data_send:
+	ld (c), a
+
+	ld a, 0x30						; pulse
+	ld (c), a
+
+
+	rr d							; lsb shifter
+	dec e
+	jr nz, @@bit_send
+
+
+	dec b
+	jr nz, @@byte_send
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+	ld a, 0x20						; stop bit (0)
+	ld (c), a
+
+	ld a, 0x30						; pulse
+	ld (c), a
+
+
+	call sgb_command_wait
+	ret
+
+
+
+; //////////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////////
+
+
+
+sgb_command_wait:
+	ld de, 0x1b58					; sgb 1x speed
+
+	call sgb_gbc_mode
+	jr nc, @@loop
+
+
+	ld de, 0x1b58 * 2				; gbc 2x speed
+
+
+; -------------------------------------------------------
+; -------------------------------------------------------
+
+
+@@loop:
+	nop
+	nop
+	nop
+
+	dec de
+
+	ld a, d
+	or e
+	jr nz, @@loop
+
+
+	ret
+
+
+
+; //////////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////////
+
+
+
+sgb_init:
+	call sgb_gbc_mode					; sgb only
+	jr c, @border
+
+
+
+@@loop:
+	ldh a, (0x41)						; wait vblank
+	and a, 0x03
+	cp a, 0x01
+	jr nz, @@loop
+
+
+	xor a								; all off
+	ldh (0x40), a
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+	ld a, 0xe4							; typical palette
+	ldh (0x47), a
+	ldh (0x48), a
+	ldh (0x49), a
+
+
+	call sgb_command_wait				; ~4 VBL
+
+
+; --------------------------------------------------------
+; --------------------------------------------------------
+
+
+	ld hl, @sgb_snes_asm1				; must upload SNES asm program first!!
+	call sgb_command_full
+
+
+	ld hl, @sgb_snes_asm2
+	call sgb_command_full
+
+
+	ld hl, @sgb_snes_asm3
+	call sgb_command_full
+
+
+	ld hl, @sgb_snes_asm4
+	call sgb_command_full
+
+
+	ld hl, @sgb_snes_asm5
+	call sgb_command_full
+
+
+	ld hl, @sgb_snes_asm6
+	call sgb_command_full
+
+
+	ld hl, @sgb_snes_asm7
+	call sgb_command_full
+
+
+	ld hl, @sgb_snes_asm8
+	call sgb_command_full
+
+
+; --------------------------------------------------------
+; --------------------------------------------------------
+
+
+@border:
+	ld hl, @sgb_mask_on					; freeze = blank screen
+	call sgb_command_full
+
+
+	ld a, 0x11							; bg on, lcd off, chr 8000
+	ldh (0x40), a
+
+
+	xor a								; reset scx, scy
+	ldh (0x42), a
+	ldh (0x43), a
+
+
+	call sgb_command_wait
+
+
+; --------------------------------------------------------
+; --------------------------------------------------------
+
+
+	ld hl, 0x9800						; vram tilemap
+	ld de, 0x000c						; row bump
+
+	ld a, 0x80							; start tile #  (8800-9800)
+	ld c, 0x0d							; height
+
+
+
+@row:
+	ld b, 0x14							; width
+
+
+@@loop:
+	ldi (hl), a
+	inc a
+
+	dec b
+	jr nz, @@loop
+	
+	add hl, de
+
+	dec c
+	jr nz, @row
+
+
+	ret
+
+
+; =========================================================
+; =========================================================
+
+
+@sgb_snes_asm1:
+	.db 0x79, 0x5d, 0x08, 0x00
+	.db 0x0b, 0x8c, 0xd0, 0xf4
+	.db 0x60, 0x00, 0x00, 0x00
+	.db 0x00, 0x00, 0x00, 0x00
+
+
+@sgb_snes_asm2:
+	.db 0x79, 0x52, 0x08, 0x00
+	.db 0x0b, 0xa9, 0xe7, 0x9f
+	.db 0x01, 0xc0, 0x7e, 0xe8
+	.db 0xe8, 0xe8, 0xe8, 0xe0
+
+
+@sgb_snes_asm3:
+	.db 0x79, 0x47, 0x08, 0x00
+	.db 0x0b, 0xc4, 0xd0, 0x16
+	.db 0xa5, 0xcb, 0xc9, 0x05
+	.db 0xd0, 0x10, 0xa2, 0x28
+
+
+@sgb_snes_asm4:
+	.db 0x79, 0x3c, 0x08, 0x00
+	.db 0x0b, 0xf0, 0x12, 0xa5
+	.db 0xc9, 0xc9, 0xc8, 0xd0
+	.db 0x1c, 0xa5, 0xca, 0xc9
+
+
+@sgb_snes_asm5:
+	.db 0x79, 0x31, 0x08, 0x00
+	.db 0x0b, 0x0c, 0xa5, 0xca
+	.db 0xc9, 0x7e, 0xd0, 0x06
+	.db 0xa5, 0xcb, 0xc9, 0x7e
+
+
+@sgb_snes_asm6:
+	.db 0x79, 0x26, 0x08, 0x00
+	.db 0x0b, 0x39, 0xcd, 0x48
+	.db 0x0c, 0xd0, 0x34, 0xa5
+	.db 0xc9, 0xc9, 0x80, 0xd0
+
+
+@sgb_snes_asm7:
+	.db 0x79, 0x1b, 0x08, 0x00
+	.db 0x0b, 0xea, 0xea, 0xea
+	.db 0xea, 0xea, 0xa9, 0x01
+	.db 0xcd, 0x4f, 0x0c, 0xd0
+
+
+@sgb_snes_asm8:
+	.db 0x79, 0x10, 0x08, 0x00
+	.db 0x0b, 0x4c, 0x20, 0x08
+	.db 0xea, 0xea, 0xea, 0xea
+	.db 0xea, 0x60, 0xea, 0xea
+
+
+
+; //////////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////////
+
+
+
+sgb_upload:
+	ld a, 0x81							; bg on, lcd on  (##)
+	ldh (0x40), a
+
+	call sgb_command_wait
+
+
+; --------------------------------------------------------
+; --------------------------------------------------------
+
+
+	call sgb_command_full
+
+
+; --------------------------------------------------------
+; --------------------------------------------------------
+
+
+@@loop:
+	ldh a, (0x41)						; wait vblank
+	and a, 0x03
+	cp a, 0x01
+	jr nz, @@loop
+
+
+	ld a, 0x01							; bg on, lcd off
+	ldh (0x40), a
+
+	ret
+
+
+
+; //////////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////////
+
+
+
+sgb_unlock:
+	ld hl, 0x9000				; wipe tiles
+	ld b, 0x10
+	xor a
+
+
+@@wipe_loop1:
+	ldi (hl), a
+	dec b
+	jr nz, @@wipe_loop1
+
+
+; ------------------------------------------------------
+; ------------------------------------------------------
+
+
+	ld hl, 0x9800				; wipe tilemap
+
+
+@@wipe_loop2:
+	ldi (hl), a
+
+	bit 2, h
+	jr z, @@wipe_loop2
+
+
+; -----------------------------------------------------------
+; -----------------------------------------------------------
+
+
+	ld a, 0x81					; lcd on, bg on  (required to unfreeze screen?)
+	ldh (0x40), a
+	call sgb_command_wait
+
+
+	ld hl, @sgb_mask_off		; unlock screen
+	call sgb_command_full
+
+
+
+@@vbl_loop:
+	ldh a, (0x41)				; wait vblank
+	and a, 0x03
+	cp a, 0x01
+	jr nz, @@vbl_loop
+
+
+	xor a						; lcd off
+	ldh (0x40), a
+
+
+	ret
+
+
+; ==============================================================
+; ==============================================================
+
+
+@sgb_mask_on:
+	.db 0xb9, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+
+@sgb_mask_off:
+	.db 0xb9, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+
+
+; ///////////////////////////////////////////////////////////////
+; ///////////////////////////////////////////////////////////////
+
+
+
+sgb_gbc_mode:
+	ldh a, (0xaf)
+	cp a, 0x11
+
+
+	scf							; carry = gbc
+	ret z
+
+	ccf							; invert carry = sgb
+	ret

@@ -1,0 +1,44 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_border_tilemap:
+	ld de, @data					; rom src
+	ld hl, 0x8800					; vram dst
+	ld bc, 0x0800 + 0x80
+
+
+
+@@loop:
+	ld a, (de)
+	ldi (hl), a
+
+	inc de
+	dec bc
+
+	ld a, b
+	or a, c
+	jr nz, @@loop
+
+
+
+	ld a, (0xdff9)
+	jp 0x214d+1
+
+
+
+; /////////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////////
+
+
+
+.relativeinclude off
+
+
+@data:
+	.import "sgb_border_3/bikers/__border_tilemap.bin"
+	; .import "__border_tilemap.bin"
+
+
+.relativeinclude on

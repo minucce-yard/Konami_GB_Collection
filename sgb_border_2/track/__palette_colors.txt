@@ -1,0 +1,44 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_palette_colors:
+	ld de, @data					; rom src
+	ld hl, 0x8800					; vram dst
+	ld bc, 0x1000
+
+
+
+@@loop:
+	ld a, (de)
+	ldi (hl), a
+
+	inc de
+	dec bc
+
+	ld a, b
+	or a, c
+	jr nz, @@loop
+
+
+
+	ld a, (0xd6a6)
+	jp 0x385+1
+
+
+
+; /////////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////////
+
+
+
+.relativeinclude off
+
+
+@data:
+	.import "sgb_border_2/track/__palette_colors.bin"
+	; .import "__palette_colors.bin"
+
+
+.relativeinclude on

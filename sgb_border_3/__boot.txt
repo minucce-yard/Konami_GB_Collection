@@ -1,0 +1,41 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_boot:
+	di
+
+	ld a, int(orga(sgb_boot) / 0x4000)
+	ld (0xdff9), a
+
+
+	call sgb_detect
+	jr z, @@exit
+
+
+; ------------------------------------------------------
+; ------------------------------------------------------
+
+
+	call sgb_init
+	call sgb_border
+	call sgb_palette
+	call sgb_unlock
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+@@exit:
+	ld hl, 0xdff5				; old code
+	ld b, 0x06
+	call 0x03ec
+
+
+	xor a						; clear irqs
+	ldh (0x0f), a
+
+	ei
+	ret

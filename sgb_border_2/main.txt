@@ -1,0 +1,49 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x095c, 0x0
+
+	ld a, int(orga(sgb_boot) / 0x4000)
+	ld (0x2100), a
+
+	call sgb_boot
+
+warnpc 0x0964
+
+
+; -----------------------------------------------------------------
+; -----------------------------------------------------------------
+
+
+org 0x09ba, 0x0
+
+	; 0xd6a7 = sgb flag
+
+	jr 0x09c8					; skip sgb init  (slow)
+
+warnpc 0x09c8
+
+
+
+; /////////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////////
+
+
+
+;
+; sgb header
+;
+
+
+org 0x0143, 0x0
+	db 0x80							; CGB + SGB support
+
+
+org 0x0146, 0x0
+	db 0x03
+
+
+org 0x014b, 0x0
+	db 0x33

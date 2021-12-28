@@ -1,0 +1,44 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_border_tiles1:
+	ld de, @data					; rom src
+	ld hl, 0x8800					; vram dst
+	ld bc, 0x1000
+
+
+
+@@loop:
+	ld a, (de)
+	ldi (hl), a
+
+	inc de
+	dec bc
+
+	ld a, b
+	or a, c
+	jr nz, @@loop
+
+
+
+	ld a, (0xdff9)
+	jp 0x214d+1
+
+
+
+; /////////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////////
+
+
+
+.relativeinclude off
+
+
+@data:
+	.import "sgb_border_3/goemon/__border_tiles1.bin"
+	; .import "__border_tiles1.bin"
+
+
+.relativeinclude on

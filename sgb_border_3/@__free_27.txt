@@ -1,0 +1,41 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+.relativeinclude on
+
+
+	.include "__boot.txt"
+	.include "__sgb.txt"
+
+	.include "__border.txt"
+	.include "__palette.txt"
+
+
+.relativeinclude off
+
+
+
+; /////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////
+
+
+
+.if AUTOBOOT_GAME == 1
+	.include "sgb_border_3/twinbee/@__free_27.txt"
+
+
+.elseif AUTOBOOT_GAME == 2
+	.include "sgb_border_3/goemon/@__free_27.txt"
+
+
+.elseif AUTOBOOT_GAME == 3
+	.include "sgb_border_3/bikers/@__free_27.txt"
+
+
+.elseif AUTOBOOT_GAME == 4
+	.include "sgb_border_3/guttang/@__free_27.txt"
+
+
+.endif

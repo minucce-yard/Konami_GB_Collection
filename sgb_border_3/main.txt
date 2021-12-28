@@ -1,0 +1,50 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x01bc, 0x0
+
+	ld a, int(orga(sgb_boot) / 0x4000)
+	ld (0x2100), a
+
+	call sgb_boot
+
+warnpc 0x01c4
+
+
+; -----------------------------------------------------------------
+; -----------------------------------------------------------------
+
+
+org 0x016c, 0x00
+
+	ld a, int(orga(sgb_palette_game) / 0x4000)
+	ld (0x2100), a
+
+	jp sgb_palette_game
+
+warnpc 0x0176
+
+
+
+; /////////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////////
+
+
+
+;
+; sgb header
+;
+
+
+org 0x0143, 0x0
+	db 0x80							; CGB + SGB support
+
+
+org 0x0146, 0x0
+	db 0x03
+
+
+org 0x014b, 0x0
+	db 0x33
