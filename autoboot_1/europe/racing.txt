@@ -1,0 +1,10 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x2f8e, 0x00
+
+	jr 0x2f9a					; skip main menu return  (select at title)
+
+warnpc 0x2f9a

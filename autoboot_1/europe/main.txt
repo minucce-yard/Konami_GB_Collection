@@ -1,0 +1,112 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+;  Original code by tidi, Rushiomatsu
+
+
+org 0x4395, 0x06
+	ld a, AUTOBOOT_GAME				; force game type  (0-3)
+	ld (0xc0b0), a
+
+
+; ==================================================================
+; ==================================================================
+
+
+org 0x439f, 0x06
+	ld a, 0x09						; load game  (soft reset)
+
+
+
+org 0x4ba8, 0x06
+	ld a, 0x09						; load game  (intro)
+
+
+
+org 0x4bbf, 0x06
+	ld a, 0x09						; load game  (start = skip intro)
+
+
+
+; #############################################################
+; #############################################################
+
+
+
+org 0x01f9, 0x0
+	call @load_game_clear
+
+
+
+org 0x02c3, 0x0
+	ld hl, @soft_reset_clear_palette
+
+
+; =============================================================
+; =============================================================
+
+
+
+org 0x7fe0, 0x0
+
+@load_game_clear:
+	xor a
+	ldh (0x40), a
+
+
+	ldh a, (0xfe)
+	or a
+
+	ret
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+@soft_reset_clear_palette:
+	call 0x6268						; clear bg palette
+
+
+	ld hl, 0x626f					; clear obj palette
+	call 0x0e41
+	call 0x0b1c
+
+
+	ret
+
+
+warnpc 0x7fff
+
+
+
+; #############################################################
+; #############################################################
+
+
+
+.relativeinclude on
+
+
+.if AUTOBOOT_GAME == 0
+	.include "gradius.txt"
+
+
+.elseif AUTOBOOT_GAME == 1
+	.include "castlevania.txt"
+
+
+.elseif AUTOBOOT_GAME == 2
+	.include "racing.txt"
+
+
+.elseif AUTOBOOT_GAME == 3
+	.include "contra.txt"
+
+
+.endif
+
+
+.relativeinclude off

@@ -1,0 +1,7 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x72ef, 0x08
+	and a, 0x00						; skip main menu return  (select at title)

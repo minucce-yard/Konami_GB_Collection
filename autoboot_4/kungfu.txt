@@ -1,0 +1,52 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x4684, 0x1c
+	ldh a, (0x8b)					; skip main menu return  (select at title)
+
+	cp a, 0x04						; main menu -- select
+	jp z, 0x46c2
+
+	cp a, 0x40						; main menu -- up
+	jr z, 0x46c2
+
+	cp a, 0x80						; main menu -- down
+	jr z, 0x46c2
+
+warnpc 0x4693
+
+
+; =========================================================
+; =========================================================
+
+
+org 0x4752, 0x1c
+
+	ld a, (0xd027)					; flip cursor
+	xor a, 0x01
+	ld (0xd027), a
+
+
+	ld c, 0x08
+	jr nz, @@move_sprite
+
+
+	ld c, 0xf8
+
+
+; ------------------------------------------------------------
+; ------------------------------------------------------------
+
+
+@@move_sprite:
+	ld a, (0xd01f)
+	add a, c
+	ld (0xd01f), a
+	ld (0xd023), a
+
+	ret
+
+
+warnpc 0x4771

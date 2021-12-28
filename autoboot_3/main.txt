@@ -1,0 +1,123 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+;  Original code by tidi, Rushiomatsu
+
+
+org 0x71b4, 0x0c
+
+	jp 0x0155						; soft reset
+
+warnpc 0x71c6
+
+
+
+; /////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////
+
+
+
+org 0x0168, 0x0
+	ld hl, 0x2005					; white bg clear
+
+
+; =============================================================
+; =============================================================
+
+
+org 0x0196, 0x0
+
+@reload_game:
+	ld a, AUTOBOOT_GAME				; force game type  (1-4)
+	ld (0xdff3), a
+
+
+	ld a, 0x0c
+	ld (0x2100), a
+
+	jp 0x79aa						; start game
+
+
+warnpc 0x01a8
+
+
+
+; #############################################################
+; #############################################################
+
+
+
+org 0x0162, 0x0
+	call @soft_reset_clear
+
+
+
+org 0x017a, 0x0
+	call @soft_reset_clear
+
+
+; =============================================================
+; =============================================================
+
+
+org 0x3fe8, 0x0
+
+@soft_reset_clear:
+
+@@loop:
+	ldh a, (0x44)
+	cp a, 0x90
+	jr nz, @@loop
+
+
+	xor a							; screen off
+	ldh (0x40), a
+
+
+; --------------------------------------------------------
+; --------------------------------------------------------
+
+
+	ld hl, 0x2007					; clear obj palette
+	rst 0x10
+
+
+	call 0x09ee						; clear tilemap
+
+	ret
+
+
+warnpc 0x4000
+
+
+
+; #############################################################
+; #############################################################
+
+
+
+.relativeinclude on
+
+
+.if AUTOBOOT_GAME == 1
+	.include "twinbee.txt"
+
+
+.elseif AUTOBOOT_GAME == 2
+	.include "goemon.txt"
+
+
+.elseif AUTOBOOT_GAME == 3
+	.include "bikers.txt"
+
+
+.elseif AUTOBOOT_GAME == 4
+	.include "guttang.txt"
+
+
+.endif
+
+
+.relativeinclude off

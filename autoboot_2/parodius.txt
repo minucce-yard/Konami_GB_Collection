@@ -1,0 +1,12 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x6a91, 0x10
+	and a, 0x00					; skip main menu return  (select at title)
+
+
+
+org 0x6a99, 0x10
+	and a, 0x43					; select, d-pad

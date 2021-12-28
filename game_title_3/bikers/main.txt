@@ -1,0 +1,23 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+.relativeinclude off
+
+
+org (0x486e+0x1000), 0x28
+	.import "game_title_3\bikers\9000.bin"
+
+
+
+org (0x486e+0xb00), 0x28
+	.import "game_title_3\bikers\8b00.bin"
+
+
+
+org (0x606e), 0x28
+	.import "game_title_3\bikers\9800.bin"
+
+
+.relativeinclude on

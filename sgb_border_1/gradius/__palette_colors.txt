@@ -1,0 +1,44 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_palette_colors:
+	ld de, @data					; rom src
+	ld hl, 0x8800					; vram dst
+	ld bc, 0x1000
+
+
+
+@@loop:
+	ld a, (de)
+	ldi (hl), a
+
+	inc de
+	dec bc
+
+	ld a, b
+	or a, c
+	jr nz, @@loop
+
+
+
+	ldh a, (0xfe)
+	jp 0xb27+1
+
+
+
+; /////////////////////////////////////////////////////////////////
+; /////////////////////////////////////////////////////////////////
+
+
+
+.relativeinclude off
+
+
+@data:
+	.import "sgb_border_1/gradius/__palette_colors.bin"
+	; .import "__palette_colors.bin"
+
+
+.relativeinclude on

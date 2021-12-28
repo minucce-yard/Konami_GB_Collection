@@ -1,0 +1,26 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x4000, 0x20
+
+	.include "sgb_border_2/@__free_20.txt"
+
+warnpc 0x8000-1
+
+
+
+org 0x7fff, 0x20
+	.db 0x20		; mark bank id
+
+
+; ----------------------------------------------------------------
+; ----------------------------------------------------------------
+
+
+org 0x4000, 0x21
+
+;	.include "sgb_border_2/@__free_21.txt"
+
+warnpc 0x8000-1

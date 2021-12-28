@@ -1,0 +1,27 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x6aba, 0x0e
+	and a, 0x80						; skip main menu return  (select at title)
+
+
+; ===========================================================
+; ===========================================================
+
+
+org 0x41d5, 0x1b
+	ld a, (0xc008)					; main menu -- select, d-pad
+	and a, 0x4c
+	ret z
+
+
+	ld a, (0xc028)					; flip cursor
+	xor a, 0x01
+	ld (0xc028), a
+
+	ret
+
+
+warnpc 0x41e6

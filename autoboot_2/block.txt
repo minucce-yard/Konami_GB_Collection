@@ -1,0 +1,11 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x631f, 0x11
+
+	jr 0x6322						; skip main menu return  (select at title)
+	nop
+
+warnpc 0x6322

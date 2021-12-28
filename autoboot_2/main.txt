@@ -1,0 +1,113 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+;  Original code by tidi, Rushiomatsu
+
+
+org 0x403b, 0x1a
+
+	ld a, AUTOBOOT_GAME				; force game type  (1-4)
+	ld (0xd6a2), a
+
+	jp 0x0958
+
+warnpc 0x4044
+
+
+
+; ==================================================================
+; ==================================================================
+
+
+org 0x40a2, 0x1a
+
+	jp 0x403b						; skip logo
+
+warnpc 0x40a8
+
+
+; ==================================================================
+; ==================================================================
+
+
+org 0x465a, 0x1a
+
+	jp 0x403b						; reset = reload game
+
+warnpc 0x4666
+
+
+
+; ##################################################################
+; ##################################################################
+
+
+
+org 0x07d4, 0x0
+	jp @soft_reset_clear_screen
+
+
+
+org 0x07dd, 0x0
+	jp @soft_reset_clear_screen
+
+
+; ==================================================================
+; ==================================================================
+
+
+org 0x08f0, 0x0
+		
+@soft_reset_clear_screen:
+
+	ei								; game screen split
+
+
+@@loop:
+	ldh a, (0x44)
+	cp a, 0x90
+	jr nz, @@loop
+
+
+	xor a							; screen off = garbage tile fix
+	ldh (0x40), a
+
+
+	di								; reload init
+	jp 0x092d
+
+
+warnpc 0x0900
+
+
+
+; ##################################################################
+; ##################################################################
+
+
+
+.relativeinclude on
+
+
+.if AUTOBOOT_GAME == 1
+	.include "parodius.txt"
+
+
+.elseif AUTOBOOT_GAME == 2
+	.include "block.txt"
+
+
+.elseif AUTOBOOT_GAME == 3
+	.include "track.txt"
+
+
+.elseif AUTOBOOT_GAME == 4
+	.include "frogger.txt"
+
+
+.endif
+
+
+.relativeinclude off

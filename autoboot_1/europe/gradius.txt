@@ -1,0 +1,10 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x602e, 0x10
+
+	jr 0x603a					; skip main menu return  (select at title)
+
+warnpc 0x603a

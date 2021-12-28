@@ -1,0 +1,66 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+;  Original code by dACE, Rushiomatsu
+
+
+org 0x4158, 0x19
+
+	ld a, AUTOBOOT_GAME
+	ld (0xcca0), a
+
+	jp 0x0275						; soft reset
+
+warnpc 0x4162
+
+
+; =============================================================
+; =============================================================
+
+
+org 0x41bf, 0x19
+
+	jp 0x4158						; skip logo
+
+warnpc 0x41c5
+
+
+; =============================================================
+; =============================================================
+
+
+org 0x4741, 0x19
+	jp 0x4153						; reload game
+
+
+
+; #############################################################
+; #############################################################
+
+
+
+.relativeinclude on
+
+
+.if AUTOBOOT_GAME == 1
+	.include "gradius2.txt"
+
+
+.elseif AUTOBOOT_GAME == 2
+	.include "castlevania2.txt"
+
+
+.elseif AUTOBOOT_GAME == 3
+	.include "kungfu.txt"
+
+
+.elseif AUTOBOOT_GAME == 4
+	.include "antarctic.txt"
+
+
+.endif
+
+
+.relativeinclude off

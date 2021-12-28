@@ -1,0 +1,12 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x640b, 0x01
+	and a, 0x00						; skip main menu return  (select at title)
+
+
+
+org 0x6412, 0x01
+	and a, 0x4c						; main menu -- select, d-pad

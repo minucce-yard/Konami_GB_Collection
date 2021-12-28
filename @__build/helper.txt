@@ -1,0 +1,61 @@
+/*
+	Code should be used only for educational, documentation and modding purposes.
+*/
+
+
+
+.macro org, offset, bank
+	.headersize 0
+
+	.org (offset % 0x4000) + (bank * 0x4000)
+
+	.if bank > 0
+		.headersize 0x4000 - (bank * 0x4000)
+	.else
+		.headersize 0x0000 - (bank * 0x4000)
+	.endif
+.endmacro
+
+
+
+.macro orgpc
+	org ((orga() % 0x4000) + 0x4000), orga() / 0x4000
+.endmacro
+
+
+
+.macro base, offset
+	.headersize 0
+
+	.headersize offset - orga()
+.endmacro
+
+
+
+; ###################################################
+; ###################################################
+
+
+
+.macro warnpc, offset
+	.if offset < org()
+		.error (org() - offset) + " overflow  [" + tohex(org()) + " >> " + tohex(offset) + " -- " + tohex(orga()) + "]"
+	.endif
+.endmacro
+
+
+
+.macro freepc, offset
+	.if offset < org()
+		.error (org() - offset) + " overflow  [" + tohex(org()) + " >> " + tohex(offset) + " -- " + tohex(orga()) + "]"
+	.else
+		.notice (offset - org()) + " free  [" + tohex(org()) + " < " + tohex(offset) + " -- " + tohex(orga()) + "]"
+	.endif
+.endmacro
+
+
+
+.macro printpc
+	.notice tohex(org())
+.endmacro
+

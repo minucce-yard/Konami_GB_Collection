@@ -1,0 +1,10 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x610b, 0x1f
+
+	ret								; skip main menu return  (select at title)
+
+warnpc 0x6113

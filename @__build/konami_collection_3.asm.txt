@@ -1,0 +1,85 @@
+/*
+	Z80 armips assembler by Prof9
+	https://github.com/Prof9/armips/tree/gameboy
+*/
+
+
+
+.gb
+.open ROM_FILE,0
+
+
+
+.relativeinclude on
+
+
+	.include "helper.txt"
+
+
+.relativeinclude off
+
+
+
+
+.ifndef BUILD_LEVEL
+
+	.definelabel BUILD_LEVEL, 9
+
+.endif
+
+
+
+.ifndef AUTOBOOT_GAME
+
+	.definelabel AUTOBOOT_GAME, 1
+
+.endif
+
+
+
+; //////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////
+
+
+
+.if BUILD_LEVEL >= 1
+
+
+/*	Basic		*/
+
+
+	.include "@__free_3/main.txt"
+
+	.include "autoboot_3/main.txt"
+	.include "sgb_border_3/main.txt"
+	.include "vram_blank_3/main.txt"
+
+
+.endif
+
+
+
+; //////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////
+
+
+
+.if BUILD_LEVEL >= 2
+
+
+/*	Plus		*/
+
+
+	.include "game_title_3/main.txt"
+
+
+.endif
+
+
+
+; //////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////
+
+
+
+.close

@@ -1,0 +1,28 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+.relativeinclude on
+
+
+.if AUTOBOOT_GAME == 1
+;	.include "twinbee.txt"
+
+
+.elseif AUTOBOOT_GAME == 2
+;	.include "goemon.txt"
+
+
+.elseif AUTOBOOT_GAME == 3
+	.include "bikers/main.txt"
+
+
+.elseif AUTOBOOT_GAME == 4
+;	.include "guttang.txt"
+
+
+.endif
+
+
+.relativeinclude off

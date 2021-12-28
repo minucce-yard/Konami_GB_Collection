@@ -1,0 +1,12 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+org 0x533a, 0x0a
+	and a, 0x00						; skip main menu return  (select at title)
+
+
+
+org 0x5399, 0x0a
+	and a, 0xcd						; main menu -- select button
