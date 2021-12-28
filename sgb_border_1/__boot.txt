@@ -1,0 +1,50 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+sgb_boot:
+	ld a, int(orga(sgb_boot) / 0x4000)
+	ldh (0xfe), a
+
+
+	call sgb_detect
+	jr z, @@exit
+
+
+; ------------------------------------------------------
+; ------------------------------------------------------
+
+
+	call sgb_init
+	call sgb_border
+	call sgb_palette
+	call sgb_unlock
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+	ldh a, (0x8e)				; reset sgb(c) flag
+	cp a, 0x11
+	jr z, @@exit
+
+
+	ld a, 0xfe					; not mono
+	ldh (0x8e), a
+
+
+; ---------------------------------------------------------
+; ---------------------------------------------------------
+
+
+@@exit:
+	xor a						; old code
+	ldh (0xfe), a
+
+	ldh (0x43), a
+	ldh (0x42), a
+
+
+	ret

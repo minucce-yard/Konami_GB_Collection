@@ -1,0 +1,96 @@
+/*
+	Code should be used only for educational, documentation and modding purposes
+*/
+
+
+;  Fix irq causing vram write accidents  (not during blank)
+
+
+org 0x0a38, 0x0
+	push af
+
+
+@@wait:
+	ldh a, (0x41)				; vh-blank wait
+	and a, 0x02
+	jr nz, @@wait
+
+	pop af
+	ret
+
+
+
+; //////////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////////
+
+
+
+org 0x0a45, 0x0
+	ldh (0x4f),a				; A = $11  (bank 1)
+
+
+@@copy:
+	di							; irq safety
+	call 0x0a38
+
+	ldi a, (hl)					; write to vram
+	ld (de), a
+	ei
+
+
+	inc de						; counter
+	dec bc
+
+	ld a, c
+	or b
+	jr nz, @@copy
+
+
+warnpc 0x0a54
+
+
+
+; //////////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////////
+
+
+
+org 0x0a10, 0x0
+	ldh (0x4f),a				; A = $11  (bank 1)
+
+	ld hl, 0x9c00
+	ld bc, 0x0400
+
+
+safe_copy:
+	xor a
+
+	di							; irq safety
+	call 0x0a38
+
+	ldi (hl), a					; clear vram
+	ei
+
+
+	dec bc						; counter
+
+	ld a, c
+	or b
+	jr nz, safe_copy
+
+
+warnpc 0x0a24
+
+
+
+; //////////////////////////////////////////////////////////
+; //////////////////////////////////////////////////////////
+
+
+
+org 0x0a28, 0x0
+
+	jr safe_copy
+; nop #9
+
+warnpc 0x0a33
